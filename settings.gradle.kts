@@ -16,3 +16,4 @@ dependencyResolutionManagement {
 rootProject.name = "TaskTrack"
 include(":app")
 include(":data")
+include(":domain")
