@@ -2,7 +2,7 @@ package com.example.domain.models
 
 import java.time.LocalDate
 
-data class Task(
+data class TaskModel(
     private val id: Int,
     private val title: String,
     private val description: String,
