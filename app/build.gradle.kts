@@ -51,4 +51,8 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.7.0")
     //Fragments
     implementation("androidx.fragment:fragment-ktx:1.6.2")
+
+    //Data and Domain modules
+    implementation(project(":domain"))
+    implementation(project(":data"))
 }
