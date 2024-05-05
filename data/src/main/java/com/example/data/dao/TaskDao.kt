@@ -14,15 +14,15 @@ interface TaskDao {
     fun getAll(): List<Task>
 
     @Query("SELECT * FROM tasks WHERE id = :id")
-    fun getById(id: Int)
+    fun getById(id: Int): Task
 
     @Insert
-    fun insert(task: Task)
+    fun insert(task: Task): Int
 
     @Update
-    fun update(task: Task)
+    fun update(task: Task): Int
 
     @Delete
-    fun delete(task: Task)
+    fun delete(task: Task): Int
 
 }
