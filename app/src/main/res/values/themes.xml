@@ -3,7 +3,28 @@
     <style name="Base.Theme.TaskTrack" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+
+        <item name="fontFamily">@font/onest_font</item>
+        <item name="android:statusBarColor">@color/secondaryColor</item>
     </style>
 
     <style name="Theme.TaskTrack" parent="Base.Theme.TaskTrack" />
+
+    <style name="CardViewStyle" parent="Widget.Material3.CardView.Outlined">
+        <item name="shapeAppearanceOverlay">@style/CardShape</item>
+    </style>
+    <style name="CardShape" parent="ShapeAppearance.Material3.MediumComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">12dp</item>
+    </style>
+
+    <style name="TextInputStyle" parent="ThemeOverlay.Material3.TextInputEditText.FilledBox">
+        <item name="boxBackgroundColor">@color/primaryColor</item>
+        <item name="elevation">0dp</item>
+    </style>
+
+    <!-- Отключение tint для кнопок -->
+    <style name="ButtonStyle" parent="Widget.Material3.Button">
+        <item name="android:background">@drawable/custom_button_background</item>
+    </style>
 </resources>
