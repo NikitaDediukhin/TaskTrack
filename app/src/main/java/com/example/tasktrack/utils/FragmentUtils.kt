@@ -15,7 +15,7 @@ import java.util.Date
 object DialogManager {
     @SuppressLint("InflateParams")
     fun addTaskDialog(context: Context, listener: Listener){
-        val dialog = Dialog(context)
+        val dialog = Dialog(context, R.style.DialogCustomTheme)
 
         dialog.window?.run {
             setContentView(R.layout.add_task_dialog)
