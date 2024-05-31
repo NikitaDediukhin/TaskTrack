@@ -1,6 +1,5 @@
 package com.example.data.entities
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
@@ -10,9 +9,7 @@ data class Task(
     val id: Int,
     val title: String,
     val description: String,
-    @ColumnInfo(typeAffinity = ColumnInfo.TEXT)
     val creationDate: Long,
-    @ColumnInfo(typeAffinity = ColumnInfo.TEXT)
     val dueDate: Long,
     val competitionStatus: Boolean
 

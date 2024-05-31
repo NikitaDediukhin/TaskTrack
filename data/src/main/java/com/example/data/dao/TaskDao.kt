@@ -17,7 +17,7 @@ interface TaskDao {
     fun getById(id: Int): Task
 
     @Insert
-    fun insert(task: Task): Int
+    fun insert(task: Task): Long
 
     @Update
     fun update(task: Task): Int
