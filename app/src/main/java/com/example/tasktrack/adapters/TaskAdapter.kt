@@ -1,5 +1,6 @@
 package com.example.tasktrack.adapters
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +12,12 @@ import com.example.tasktrack.R
 class TaskAdapter: RecyclerView.Adapter<TaskAdapter.TaskViewHolder>() {
 
     private var taskList: List<TaskModel>? = null
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun setDataTasks(taskData: List<TaskModel>){
+        taskList = taskData
+        notifyDataSetChanged()
+    }
 
     class TaskViewHolder(item: View): RecyclerView.ViewHolder(item){
         private val tvTitle: TextView = item.findViewById(R.id.tvTaskTitle)
@@ -29,7 +36,7 @@ class TaskAdapter: RecyclerView.Adapter<TaskAdapter.TaskViewHolder>() {
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewHolder {
-        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.view_task_layout, parent)
+        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.view_task_layout, parent, false)
         return TaskViewHolder(itemView)
     }
 
