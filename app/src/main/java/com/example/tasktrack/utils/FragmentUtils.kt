@@ -50,7 +50,6 @@ object DialogManager {
             listener.onClick(
                 title = etTaskTitle.text.toString(),
                 description = etTaskDescription.text.toString(),
-                changeDate = Date(),
                 dueDate = dueDate
             )
         }
@@ -59,6 +58,6 @@ object DialogManager {
     }
 
     interface Listener{
-        fun onClick(title: String, description: String, changeDate: Date, dueDate: Date)
+        fun onClick(title: String, description: String, dueDate: Date)
     }
 }
