@@ -9,7 +9,7 @@ interface TaskRepository {
 
     fun getTaskById(id: Int): AppResult<TaskModel>
 
-    fun createTask(task: TaskModel): AppResult<Int>
+    fun createTask(task: TaskModel): AppResult<Long>
 
     fun updateTask(task: TaskModel): AppResult<Int>
 

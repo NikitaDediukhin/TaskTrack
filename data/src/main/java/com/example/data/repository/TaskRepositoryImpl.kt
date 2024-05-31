@@ -30,7 +30,7 @@ class TaskRepositoryImpl(
         }
     }
 
-    override fun createTask(task: TaskModel): AppResult<Int> {
+    override fun createTask(task: TaskModel): AppResult<Long> {
         return try {
             AppResult.Success(db.taskDAO().insert(mapper.toTaskEntity(task)))
         } catch (e: Exception){
