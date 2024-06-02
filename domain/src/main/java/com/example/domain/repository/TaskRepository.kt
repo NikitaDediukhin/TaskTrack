@@ -5,14 +5,14 @@ import com.example.domain.utils.AppResult
 
 interface TaskRepository {
 
-    fun getAllTasks(): AppResult<List<TaskModel>>
+    suspend fun getAllTasks(): AppResult<List<TaskModel>>
 
-    fun getTaskById(id: Int): AppResult<TaskModel>
+    suspend fun getTaskById(id: Int): AppResult<TaskModel>
 
-    fun createTask(task: TaskModel): AppResult<Long>
+    suspend fun createTask(task: TaskModel): AppResult<Long>
 
-    fun updateTask(task: TaskModel): AppResult<Int>
+    suspend fun updateTask(task: TaskModel): AppResult<Int>
 
-    fun deleteTask(task: TaskModel): AppResult<Int>
+    suspend fun deleteTask(task: TaskModel): AppResult<Int>
 
 }

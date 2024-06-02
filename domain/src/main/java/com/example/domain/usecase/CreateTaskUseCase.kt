@@ -7,7 +7,7 @@ import com.example.domain.utils.AppResult
 class CreateTaskUseCase(
     private val repository: TaskRepository
 ) {
-    fun execute(task: TaskModel): AppResult<Long> {
+    suspend fun execute(task: TaskModel): AppResult<Long> {
         return try {
             repository.createTask(task)
         } catch (e: Exception) {

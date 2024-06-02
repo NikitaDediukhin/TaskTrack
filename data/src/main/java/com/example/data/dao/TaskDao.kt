@@ -11,18 +11,18 @@ import com.example.data.entities.Task
 interface TaskDao {
 
     @Query("SELECT * FROM tasks")
-    fun getAll(): List<Task>
+    suspend fun getAll(): List<Task>
 
     @Query("SELECT * FROM tasks WHERE id = :id")
-    fun getById(id: Int): Task
+    suspend fun getById(id: Int): Task
 
     @Insert
-    fun insert(task: Task): Long
+    suspend fun insert(task: Task): Long
 
     @Update
-    fun update(task: Task): Int
+    suspend fun update(task: Task): Int
 
     @Delete
-    fun delete(task: Task): Int
+    suspend fun delete(task: Task): Int
 
 }

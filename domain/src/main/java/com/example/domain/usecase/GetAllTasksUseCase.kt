@@ -7,7 +7,7 @@ import com.example.domain.utils.AppResult
 class GetAllTasksUseCase(
     private val repository: TaskRepository
 ) {
-    fun execute(): AppResult<List<TaskModel>> {
+    suspend fun execute(): AppResult<List<TaskModel>> {
         return try {
             repository.getAllTasks()
         } catch (e: Exception) {

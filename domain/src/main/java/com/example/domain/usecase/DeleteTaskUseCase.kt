@@ -7,7 +7,7 @@ import com.example.domain.utils.AppResult
 class DeleteTaskUseCase(
     private val repository: TaskRepository
 ) {
-    fun execute(task: TaskModel): AppResult<Int> {
+    suspend fun execute(task: TaskModel): AppResult<Int> {
         return try {
             repository.deleteTask(task)
         } catch (e: Exception) {
