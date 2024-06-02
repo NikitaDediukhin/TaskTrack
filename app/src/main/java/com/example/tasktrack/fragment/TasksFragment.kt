@@ -34,25 +34,36 @@ class TasksFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // инициализация компонентов View
         init()
 
+        // Наблюдение за изменениями в LiveData taskDataLive, который находится в viewModel
         viewModel.taskDataLive.observe(viewLifecycleOwner) {
-            showTasks(it)
+            // Когда данные в taskDataLive изменяются, вызывается метод setTasks
+            // с обновленным списком задач (tasks)
+            setTasks(it)
         }
+
+        // Первоначальный запрос данных у viewModel
+        viewModel.fetchData()
     }
 
     override fun onResume() {
         super.onResume()
+        // обновление UI с текущими задачами
         viewModel.fetchData()
     }
 
-    private fun showTasks(tasks: List<TaskModel>){
+    // Добавить задачи в RecyclerView
+    private fun setTasks(tasks: List<TaskModel>){
         taskAdapter.setDataTasks(tasks)
     }
 
+    // вывести диалоговое окно для добавления задачи
     private fun showAddTaskDialog() {
         context?.let { context ->
             DialogManager.addTaskDialog(context, object : DialogManager.Listener {
+                // добавить задачу в БД
                 override fun onClick(title: String, description: String, dueDate: Date) {
                     try {
                         viewModel.createTask(
@@ -70,19 +81,23 @@ class TasksFragment: Fragment() {
     }
 
     private fun init(){
+        // Плавающая кнопка (добавить задачу)
         val btnAddTask: View = binding.btnAddTask
-
         btnAddTask.setOnClickListener{
             showAddTaskDialog()
         }
 
+        // RecyclerView & Adapter
         rvTasks = binding.rvTasks
         taskAdapter = TaskAdapter()
         val layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         rvTasks.layoutManager = layoutManager
         rvTasks.adapter = taskAdapter
 
+        // Зависимости
         val appContainer = AppContainer(requireActivity().application)
+
+        // ViewModel
         viewModel = TaskViewModel(appContainer)
     }
 
