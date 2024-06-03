@@ -8,6 +8,7 @@ class TaskRepositoryMapper {
 
     fun toTaskModel(task: Task): TaskModel {
         return TaskModel(
+            id = task.id,
             title = task.title,
             description = task.description,
             creationDate = Date(task.creationDate),
