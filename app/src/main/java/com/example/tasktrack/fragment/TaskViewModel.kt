@@ -24,31 +24,39 @@ class TaskViewModel(
     private val createTaskUseCase: CreateTaskUseCase = CreateTaskUseCase(taskRepository)
 ): ViewModel() {
 
+    // LiveData для наблюдения за списком задач
     private val taskLiveDataMutable = MutableLiveData<List<TaskModel>>()
-    val taskDataLive: LiveData<List<TaskModel>> = taskLiveDataMutable
+    val taskLiveData: LiveData<List<TaskModel>> = taskLiveDataMutable
 
+    // получение всех задач из БД
     fun fetchData() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val result = getAllTasksUseCase.execute()
                 if(result is AppResult.Success){
                     result.data.let{
+                        // Переключение на главный поток для обновления LiveData
                         withContext(Dispatchers.Main) {
                             taskLiveDataMutable.value = it
                         }
                     }
                 }
             } catch (e: Exception) {
-                Log.e("apptask", e.message.toString())
+                // Переключение на главный поток для логирования ошибок
+                withContext(Dispatchers.Main){
+                    Log.e("apptask", e.message.toString())
+                }
             }
         }
     }
 
+    // создание новой задачи и добавления её в БД
     fun createTask(title: String, description: String, changeDate: Date, dueDate: Date) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val result = createTaskUseCase.execute(
                     TaskModel(
+                        id = 0,
                         title = title,
                         description = description,
                         creationDate = changeDate,
@@ -57,12 +65,18 @@ class TaskViewModel(
                     )
                 )
                 if (result is AppResult.Success){
+                    // получение актуальных данных из базы данных
+                    fetchData()
+                    // Переключение на главный поток для логирования успешного создания задачи
                     withContext(Dispatchers.Main) {
                         Log.w("apptask", "task created!")
                     }
                 }
             } catch (e: Exception){
-                Log.e("apptask", e.message.toString())
+                // Переключение на главный поток для логирования ошибок
+                withContext(Dispatchers.Main){
+                    Log.e("apptask", e.message.toString())
+                }
             }
         }
     }

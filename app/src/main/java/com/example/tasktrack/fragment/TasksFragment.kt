@@ -37,11 +37,10 @@ class TasksFragment: Fragment() {
         // инициализация компонентов View
         init()
 
-        // Наблюдение за изменениями в LiveData taskDataLive, который находится в viewModel
-        viewModel.taskDataLive.observe(viewLifecycleOwner) {
-            // Когда данные в taskDataLive изменяются, вызывается метод setTasks
-            // с обновленным списком задач (tasks)
-            setTasks(it)
+        // анонимный наблюдатель за изменениями в LiveData taskDataLive в viewModel
+        viewModel.taskLiveData.observe(viewLifecycleOwner) {
+            // вызов метода при изменении данных, добавить новые задачи в RecyclerView
+            taskAdapter.submitList(it)
         }
 
         // Первоначальный запрос данных у viewModel
@@ -52,32 +51,6 @@ class TasksFragment: Fragment() {
         super.onResume()
         // обновление UI с текущими задачами
         viewModel.fetchData()
-    }
-
-    // Добавить задачи в RecyclerView
-    private fun setTasks(tasks: List<TaskModel>){
-        taskAdapter.setDataTasks(tasks)
-    }
-
-    // вывести диалоговое окно для добавления задачи
-    private fun showAddTaskDialog() {
-        context?.let { context ->
-            DialogManager.addTaskDialog(context, object : DialogManager.Listener {
-                // добавить задачу в БД
-                override fun onClick(title: String, description: String, dueDate: Date) {
-                    try {
-                        viewModel.createTask(
-                            title = title,
-                            description = description,
-                            changeDate = Date(),
-                            dueDate = dueDate
-                        )
-                    } catch (e: Exception){
-                        Log.e("task", e.message.toString())
-                    }
-                }
-            })
-        }
     }
 
     private fun init(){
@@ -99,6 +72,27 @@ class TasksFragment: Fragment() {
 
         // ViewModel
         viewModel = TaskViewModel(appContainer)
+    }
+
+    // вывести диалоговое окно для добавления задачи
+    private fun showAddTaskDialog() {
+        context?.let { context ->
+            DialogManager.addTaskDialog(context, object : DialogManager.Listener {
+                // добавить задачу в БД
+                override fun onClick(title: String, description: String, dueDate: Date) {
+                    try {
+                        viewModel.createTask(
+                            title = title,
+                            description = description,
+                            changeDate = Date(),
+                            dueDate = dueDate
+                        )
+                    } catch (e: Exception){
+                        Log.e("task", e.message.toString())
+                    }
+                }
+            })
+        }
     }
 
 }
