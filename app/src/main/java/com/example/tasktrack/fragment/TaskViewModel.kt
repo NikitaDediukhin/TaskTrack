@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.domain.models.TaskModel
 import com.example.domain.repository.TaskRepository
 import com.example.domain.usecase.CreateTaskUseCase
+import com.example.domain.usecase.DeleteTaskUseCase
 import com.example.domain.usecase.GetAllTasksUseCase
 import com.example.domain.utils.AppResult
 import com.example.tasktrack.di.AppContainer
@@ -21,7 +22,8 @@ class TaskViewModel(
     appContainer: AppContainer,
     private val taskRepository: TaskRepository = appContainer.provideRepository(),
     private val getAllTasksUseCase: GetAllTasksUseCase = GetAllTasksUseCase(taskRepository),
-    private val createTaskUseCase: CreateTaskUseCase = CreateTaskUseCase(taskRepository)
+    private val createTaskUseCase: CreateTaskUseCase = CreateTaskUseCase(taskRepository),
+    private val deleteTaskUseCase: DeleteTaskUseCase = DeleteTaskUseCase(taskRepository)
 ): ViewModel() {
 
     // LiveData для наблюдения за списком задач
@@ -76,6 +78,21 @@ class TaskViewModel(
                 // Переключение на главный поток для логирования ошибок
                 withContext(Dispatchers.Main){
                     Log.e("apptask", e.message.toString())
+                }
+            }
+        }
+    }
+
+    fun deleteTask(taskModel: TaskModel){
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val result = deleteTaskUseCase.execute(taskModel)
+                if (result is AppResult.Success) {
+                    fetchData()
+                }
+            } catch(e: Exception){
+                withContext(Dispatchers.Main){
+                    Log.e("appTask", e.message.toString())
                 }
             }
         }

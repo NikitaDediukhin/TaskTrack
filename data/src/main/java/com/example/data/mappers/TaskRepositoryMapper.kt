@@ -19,7 +19,7 @@ class TaskRepositoryMapper {
 
     fun toTaskEntity(taskModel: TaskModel): Task {
         return Task(
-            id = 0,
+            id = taskModel.id,
             title = taskModel.title,
             description = taskModel.description,
             creationDate = taskModel.creationDate.time,

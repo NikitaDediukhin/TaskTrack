@@ -1,5 +1,6 @@
 package com.example.tasktrack.fragment
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -54,6 +55,13 @@ class TasksFragment: Fragment() {
     }
 
     private fun init(){
+
+        // Зависимости
+        val appContainer = AppContainer(requireActivity().application)
+
+        // ViewModel
+        viewModel = TaskViewModel(appContainer)
+
         // Плавающая кнопка (добавить задачу)
         val btnAddTask: View = binding.btnAddTask
         btnAddTask.setOnClickListener{
@@ -62,16 +70,12 @@ class TasksFragment: Fragment() {
 
         // RecyclerView & Adapter
         rvTasks = binding.rvTasks
-        taskAdapter = TaskAdapter()
+        taskAdapter = TaskAdapter{
+            task -> deleteTask(task)
+        }
         val layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         rvTasks.layoutManager = layoutManager
         rvTasks.adapter = taskAdapter
-
-        // Зависимости
-        val appContainer = AppContainer(requireActivity().application)
-
-        // ViewModel
-        viewModel = TaskViewModel(appContainer)
     }
 
     // вывести диалоговое окно для добавления задачи
@@ -92,6 +96,14 @@ class TasksFragment: Fragment() {
                     }
                 }
             })
+        }
+    }
+
+    // удалить задачу
+    @SuppressLint("NotifyDataSetChanged")
+    private fun deleteTask(taskModel: TaskModel) {
+        viewModel.deleteTask(taskModel).apply {
+            taskAdapter.notifyDataSetChanged()
         }
     }
 

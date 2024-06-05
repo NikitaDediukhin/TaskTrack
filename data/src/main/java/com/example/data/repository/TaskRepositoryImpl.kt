@@ -1,6 +1,7 @@
 package com.example.data.repository
 
 import android.app.Application
+import android.util.Log
 import com.example.data.database.AppDatabase
 import com.example.data.mappers.TaskRepositoryMapper
 import com.example.domain.models.TaskModel
@@ -48,7 +49,7 @@ class TaskRepositoryImpl(
 
     override suspend  fun deleteTask(task: TaskModel): AppResult<Int> {
         return try {
-            AppResult.Success(db.taskDAO().delete(mapper.toTaskEntity(task)))
+            AppResult.Success(db.taskDAO().delete(mapper.toTaskEntity(task).id))
         } catch (e: Exception){
             AppResult.Error(e.message ?: "Unknown error")
         }
