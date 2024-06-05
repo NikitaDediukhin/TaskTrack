@@ -32,7 +32,7 @@
                 android:textColor="@color/black"
                 android:textSize="20sp"
                 android:textStyle="bold"
-                android:text="Название задачи"/>
+                android:text="Название задачи" />
 
             <TextView
                 android:id="@+id/tvTaskDescription"
@@ -42,7 +42,7 @@
                 android:textColor="@color/black"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:text="описание"/>
+                android:text="описание" />
 
             <TextView
                 android:id="@+id/tvTaskCreationDate"
@@ -52,7 +52,7 @@
                 android:textColor="@color/black"
                 android:textSize="12sp"
                 android:textStyle="bold"
-                android:text="дата создания"/>
+                android:text="дата создания" />
 
             <TextView
                 android:id="@+id/tvTaskDueDate"
@@ -73,7 +73,7 @@
                 android:textColor="@color/black"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:text="статус"/>
+                android:text="статус" />
 
         </LinearLayout>
 
@@ -82,6 +82,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
+            android:gravity="center_horizontal"
             android:orientation="vertical">
             
             <ImageView
@@ -90,20 +91,23 @@
                 android:layout_height="35dp"
                 android:layout_margin="4dp"
                 android:src="@drawable/ic_edit"
-                app:tint="@color/black"/>
+                app:tint="@color/black" />
 
             <ImageView
                 android:id="@+id/ivDeleteTask"
                 android:layout_width="35dp"
                 android:layout_height="35dp"
                 android:layout_margin="4dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackgroundBorderless"
                 android:src="@drawable/ic_delete"
-                app:tint="@color/secondaryColor"/>
+                app:tint="@color/secondaryColor" />
 
             <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/btnTaskStatus"
-                android:layout_width="40dp"
-                android:layout_height="15dp"
+                android:layout_width="45dp"
+                android:layout_height="25dp"
                 android:layout_margin="4dp" />
 
         </LinearLayout>
