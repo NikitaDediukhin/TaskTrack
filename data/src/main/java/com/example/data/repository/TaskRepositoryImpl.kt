@@ -1,7 +1,6 @@
 package com.example.data.repository
 
 import android.app.Application
-import android.util.Log
 import com.example.data.database.AppDatabase
 import com.example.data.mappers.TaskRepositoryMapper
 import com.example.domain.models.TaskModel

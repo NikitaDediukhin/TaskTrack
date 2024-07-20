@@ -9,6 +9,7 @@ import com.example.domain.models.TaskModel
 import com.example.domain.repository.TaskRepository
 import com.example.domain.usecase.CreateTaskUseCase
 import com.example.domain.usecase.DeleteTaskUseCase
+import com.example.domain.usecase.EditTaskUseCase
 import com.example.domain.usecase.GetAllTasksUseCase
 import com.example.domain.usecase.MarkTaskUseCase
 import com.example.domain.utils.AppResult
@@ -25,7 +26,8 @@ class TaskViewModel(
     private val getAllTasksUseCase: GetAllTasksUseCase = GetAllTasksUseCase(taskRepository),
     private val createTaskUseCase: CreateTaskUseCase = CreateTaskUseCase(taskRepository),
     private val deleteTaskUseCase: DeleteTaskUseCase = DeleteTaskUseCase(taskRepository),
-    private val markTaskUseCase: MarkTaskUseCase = MarkTaskUseCase(taskRepository)
+    private val markTaskUseCase: MarkTaskUseCase = MarkTaskUseCase(taskRepository),
+    private val editTaskUseCase: EditTaskUseCase = EditTaskUseCase(taskRepository)
 ): ViewModel() {
 
     // LiveData для наблюдения за списком задач
@@ -110,6 +112,21 @@ class TaskViewModel(
             } catch(e: Exception) {
                 withContext(Dispatchers.Main){
                     Log.e("appTask", e.message.toString())
+                }
+            }
+        }
+    }
+
+    fun editTask(taskModel: TaskModel) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val result = editTaskUseCase.execute(taskModel)
+                if (result is AppResult.Success) {
+                    fetchData()
+                }
+            } catch(e: Exception) {
+            withContext(Dispatchers.Main){
+                Log.e("appTask", e.message.toString())
                 }
             }
         }

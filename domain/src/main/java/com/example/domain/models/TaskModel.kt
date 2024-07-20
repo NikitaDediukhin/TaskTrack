@@ -4,9 +4,9 @@ import java.util.Date
 
 data class TaskModel(
     val id: Int,
-    val title: String,
-    val description: String,
+    var title: String,
+    var description: String,
     val creationDate: Date,
-    val dueDate: Date,
+    var dueDate: Date,
     var competitionStatus: Boolean
 )

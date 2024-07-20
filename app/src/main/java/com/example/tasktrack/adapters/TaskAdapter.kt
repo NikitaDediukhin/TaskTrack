@@ -1,5 +1,6 @@
 package com.example.tasktrack.adapters
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,11 +15,13 @@ import java.util.Locale
 
 class TaskAdapter(
     private val onDeleteTask: (TaskModel) -> Unit,
-    private val onMarkTask: (TaskModel, Boolean) -> Unit
+    private val onMarkTask: (TaskModel, Boolean) -> Unit,
+    private val onEditTask: (TaskModel) -> Unit
 ) : RecyclerView.Adapter<TaskAdapter.TaskViewHolder>() {
 
     private var taskList: MutableList<TaskModel> = mutableListOf()
 
+    @SuppressLint("NotifyDataSetChanged")
     fun submitList(list: List<TaskModel>) {
         taskList.clear()
         taskList.addAll(list)
@@ -33,11 +36,13 @@ class TaskAdapter(
         private val tvStatus: TextView = item.findViewById(R.id.tvTaskStatus)
         private val btnDelete: ImageView = item.findViewById(R.id.ivDeleteTask)
         private val btnTaskStatus: SwitchCompat = item.findViewById(R.id.btnTaskStatus)
+        private val btnTaskEdit: ImageView = item.findViewById(R.id.ivEditTask)
 
         fun onBind(
             task: TaskModel,
             onDeleteTask: (TaskModel) -> Unit,
-            onMarkTask: (TaskModel, Boolean) -> Unit
+            onMarkTask: (TaskModel, Boolean) -> Unit,
+            onEditTask: (TaskModel) -> Unit
         ) {
             tvTitle.text = task.title
             tvDescription.text = task.description
@@ -54,6 +59,10 @@ class TaskAdapter(
                 tvStatus.text = if(isChecked) "выполнено" else "в процессе"
                 onMarkTask(task, isChecked)
             }
+
+            btnTaskEdit.setOnClickListener {
+                onEditTask(task)
+            }
         }
     }
 
@@ -66,6 +75,6 @@ class TaskAdapter(
 
     override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
         val currentTask = taskList[position]
-        holder.onBind(currentTask, onDeleteTask, onMarkTask)
+        holder.onBind(currentTask, onDeleteTask, onMarkTask, onEditTask)
     }
 }

@@ -76,6 +76,9 @@ class TasksFragment: Fragment() {
             },
             onMarkTask = {
                 task, b -> markTask(task, b)
+            },
+            onEditTask = {
+                task -> showEditTaskDialog(task)
             }
         )
 
@@ -87,7 +90,7 @@ class TasksFragment: Fragment() {
     // вывести диалоговое окно для добавления задачи
     private fun showAddTaskDialog() {
         context?.let { context ->
-            DialogManager.addTaskDialog(context, object : DialogManager.Listener {
+            DialogManager.addTaskDialog(context, object : DialogManager.CreateTaskListener {
                 // добавить задачу в БД
                 override fun onClick(title: String, description: String, dueDate: Date) {
                     try {
@@ -102,6 +105,26 @@ class TasksFragment: Fragment() {
                     }
                 }
             })
+        }
+    }
+
+    private fun showEditTaskDialog(task: TaskModel) {
+        context?.let {context ->
+            DialogManager.editTaskDialog(context, task, object : DialogManager.EditTaskListener {
+                override fun onClick(title: String, description: String, dueDate: Date) {
+                    try {
+                        val updatedTask = task.copy(
+                            title = title,
+                            description = description,
+                            dueDate = dueDate
+                        )
+                        viewModel.editTask(updatedTask)
+                    } catch (e: Exception){
+                        Log.e("task", e.message.toString())
+                    }
+                }
+            })
+
         }
     }
 
