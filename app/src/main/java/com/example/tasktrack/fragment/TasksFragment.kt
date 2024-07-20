@@ -70,9 +70,15 @@ class TasksFragment: Fragment() {
 
         // RecyclerView & Adapter
         rvTasks = binding.rvTasks
-        taskAdapter = TaskAdapter{
-            task -> deleteTask(task)
-        }
+        taskAdapter = TaskAdapter(
+            onDeleteTask = {
+                task -> deleteTask(task)
+            },
+            onMarkTask = {
+                task, b -> markTask(task, b)
+            }
+        )
+
         val layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         rvTasks.layoutManager = layoutManager
         rvTasks.adapter = taskAdapter
@@ -103,6 +109,13 @@ class TasksFragment: Fragment() {
     @SuppressLint("NotifyDataSetChanged")
     private fun deleteTask(taskModel: TaskModel) {
         viewModel.deleteTask(taskModel).apply {
+            taskAdapter.notifyDataSetChanged()
+        }
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private fun markTask(taskModel: TaskModel, status: Boolean) {
+        viewModel.markTask(taskModel, status).apply {
             taskAdapter.notifyDataSetChanged()
         }
     }

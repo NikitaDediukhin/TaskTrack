@@ -47,6 +47,14 @@ class TaskRepositoryImpl(
         }
     }
 
+    override suspend fun markTaskById(taskId: Int, status: Boolean): AppResult<Int> {
+        return try {
+            AppResult.Success(db.taskDAO().markTaskById(taskId, status))
+        } catch (e: Exception) {
+            AppResult.Error(e.message ?: "Unknown error")
+        }
+    }
+
     override suspend  fun deleteTask(task: TaskModel): AppResult<Int> {
         return try {
             AppResult.Success(db.taskDAO().delete(mapper.toTaskEntity(task).id))

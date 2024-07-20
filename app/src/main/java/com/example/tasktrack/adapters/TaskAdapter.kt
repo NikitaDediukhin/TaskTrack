@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.widget.SwitchCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.domain.models.TaskModel
 import com.example.tasktrack.R
@@ -12,7 +13,8 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 
 class TaskAdapter(
-private val onDeleteTask: (TaskModel) -> Unit
+    private val onDeleteTask: (TaskModel) -> Unit,
+    private val onMarkTask: (TaskModel, Boolean) -> Unit
 ) : RecyclerView.Adapter<TaskAdapter.TaskViewHolder>() {
 
     private var taskList: MutableList<TaskModel> = mutableListOf()
@@ -30,8 +32,13 @@ private val onDeleteTask: (TaskModel) -> Unit
         private val tvDueDate: TextView = item.findViewById(R.id.tvTaskDueDate)
         private val tvStatus: TextView = item.findViewById(R.id.tvTaskStatus)
         private val btnDelete: ImageView = item.findViewById(R.id.ivDeleteTask)
+        private val btnTaskStatus: SwitchCompat = item.findViewById(R.id.btnTaskStatus)
 
-        fun onBind(task: TaskModel, onDeleteTask: (TaskModel) -> Unit) {
+        fun onBind(
+            task: TaskModel,
+            onDeleteTask: (TaskModel) -> Unit,
+            onMarkTask: (TaskModel, Boolean) -> Unit
+        ) {
             tvTitle.text = task.title
             tvDescription.text = task.description
             tvCreationDate.text = SimpleDateFormat("dd-MMM-yyyy HH:mm:ss a", Locale.getDefault()).format(task.creationDate)
@@ -41,11 +48,17 @@ private val onDeleteTask: (TaskModel) -> Unit
             btnDelete.setOnClickListener {
                 onDeleteTask(task)
             }
+
+            btnTaskStatus.isChecked = task.competitionStatus
+            btnTaskStatus.setOnCheckedChangeListener { _, isChecked ->
+                tvStatus.text = if(isChecked) "выполнено" else "в процессе"
+                onMarkTask(task, isChecked)
+            }
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewHolder {
-        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.view_task_layout, parent, false)
+        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_task_layout, parent, false)
         return TaskViewHolder(itemView)
     }
 
@@ -53,6 +66,6 @@ private val onDeleteTask: (TaskModel) -> Unit
 
     override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
         val currentTask = taskList[position]
-        holder.onBind(currentTask, onDeleteTask)
+        holder.onBind(currentTask, onDeleteTask, onMarkTask)
     }
 }

@@ -8,5 +8,5 @@ data class TaskModel(
     val description: String,
     val creationDate: Date,
     val dueDate: Date,
-    val competitionStatus: Boolean
+    var competitionStatus: Boolean
 )

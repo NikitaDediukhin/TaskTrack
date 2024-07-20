@@ -15,4 +15,6 @@ interface TaskRepository {
 
     suspend fun deleteTask(task: TaskModel): AppResult<Int>
 
+    suspend fun markTaskById(taskId: Int, status: Boolean): AppResult<Int>
+
 }

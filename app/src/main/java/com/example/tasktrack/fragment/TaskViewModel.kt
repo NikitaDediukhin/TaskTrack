@@ -10,6 +10,7 @@ import com.example.domain.repository.TaskRepository
 import com.example.domain.usecase.CreateTaskUseCase
 import com.example.domain.usecase.DeleteTaskUseCase
 import com.example.domain.usecase.GetAllTasksUseCase
+import com.example.domain.usecase.MarkTaskUseCase
 import com.example.domain.utils.AppResult
 import com.example.tasktrack.di.AppContainer
 import kotlinx.coroutines.Dispatchers
@@ -23,7 +24,8 @@ class TaskViewModel(
     private val taskRepository: TaskRepository = appContainer.provideRepository(),
     private val getAllTasksUseCase: GetAllTasksUseCase = GetAllTasksUseCase(taskRepository),
     private val createTaskUseCase: CreateTaskUseCase = CreateTaskUseCase(taskRepository),
-    private val deleteTaskUseCase: DeleteTaskUseCase = DeleteTaskUseCase(taskRepository)
+    private val deleteTaskUseCase: DeleteTaskUseCase = DeleteTaskUseCase(taskRepository),
+    private val markTaskUseCase: MarkTaskUseCase = MarkTaskUseCase(taskRepository)
 ): ViewModel() {
 
     // LiveData для наблюдения за списком задач
@@ -98,6 +100,19 @@ class TaskViewModel(
         }
     }
 
-
+    fun markTask(taskModel: TaskModel, status: Boolean) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val result = markTaskUseCase.execute(taskModel, status)
+                if (result is AppResult.Success) {
+                    fetchData()
+                }
+            } catch(e: Exception) {
+                withContext(Dispatchers.Main){
+                    Log.e("appTask", e.message.toString())
+                }
+            }
+        }
+    }
 
 }
