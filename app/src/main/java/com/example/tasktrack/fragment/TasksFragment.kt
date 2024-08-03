@@ -10,9 +10,9 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.domain.models.TaskModel
+import com.example.tasktrack.activity.MainActivity
 import com.example.tasktrack.adapters.TaskAdapter
 import com.example.tasktrack.databinding.TasksFragmentBinding
-import com.example.tasktrack.di.AppContainer
 import com.example.tasktrack.utils.DialogManager
 import java.util.Date
 
@@ -35,6 +35,9 @@ class TasksFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // Initialize ViewModel
+        viewModel = (activity as MainActivity).vm
+
         // инициализация компонентов View
         init()
 
@@ -54,13 +57,7 @@ class TasksFragment: Fragment() {
         viewModel.fetchData()
     }
 
-    private fun init(){
-
-        // Зависимости
-        val appContainer = AppContainer(requireActivity().application)
-
-        // ViewModel
-        viewModel = TaskViewModel(appContainer)
+    private fun init() {
 
         // Плавающая кнопка (добавить задачу)
         val btnAddTask: View = binding.btnAddTask

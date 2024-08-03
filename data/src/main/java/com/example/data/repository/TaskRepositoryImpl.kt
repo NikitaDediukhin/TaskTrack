@@ -1,6 +1,7 @@
 package com.example.data.repository
 
 import android.app.Application
+import android.content.Context
 import com.example.data.database.AppDatabase
 import com.example.data.mappers.TaskRepositoryMapper
 import com.example.domain.models.TaskModel
@@ -8,11 +9,11 @@ import com.example.domain.repository.TaskRepository
 import com.example.domain.utils.AppResult
 
 class TaskRepositoryImpl(
-    application: Application,
+    context: Context,
     private val mapper: TaskRepositoryMapper
 ): TaskRepository {
 
-    private val db: AppDatabase = AppDatabase.getInstance(application.applicationContext)
+    private val db: AppDatabase = AppDatabase.getInstance(context)
 
     override suspend  fun getAllTasks(): AppResult<List<TaskModel>> {
         return try {
