@@ -12,9 +12,6 @@ interface TaskDao {
     @Query("SELECT * FROM tasks")
     suspend fun getAll(): List<Task>
 
-    @Query("SELECT * FROM tasks WHERE id = :id")
-    suspend fun getById(id: Int): Task
-
     @Insert
     suspend fun insert(task: Task): Long
 

@@ -29,9 +29,17 @@ class TaskViewModel @Inject constructor(
     private val editTaskUseCase: EditTaskUseCase
 ): ViewModel() {
 
-    // LiveData для наблюдения за списком задач
-    private val taskLiveDataMutable = MutableLiveData<List<TaskModel>>()
-    val taskLiveData: LiveData<List<TaskModel>> = taskLiveDataMutable
+    // LiveData для наблюдения за списком невыполненных задач
+    private val uncompletedTasksMutable = MutableLiveData<List<TaskModel>>()
+    val uncompletedTasks: LiveData<List<TaskModel>> = uncompletedTasksMutable
+
+    // LiveData для наблюдения за списком выполненных задач
+    private val completedTasksMutable = MutableLiveData<List<TaskModel>>()
+    val completedTasks: LiveData<List<TaskModel>> = completedTasksMutable
+
+    init {
+        fetchData()
+    }
 
     // получение всех задач из БД
     fun fetchData() {
@@ -39,16 +47,16 @@ class TaskViewModel @Inject constructor(
             try {
                 val result = getAllTasksUseCase.execute()
                 if(result is AppResult.Success){
-                    result.data.let{
+                    result.data.let {
                         // Переключение на главный поток для обновления LiveData
                         withContext(Dispatchers.Main) {
-                            taskLiveDataMutable.value = it
+                            uncompletedTasksMutable.value = it.filter { !it.competitionStatus }
+                            completedTasksMutable.value = it.filter { it.competitionStatus }
                         }
                     }
                 }
             } catch (e: Exception) {
-                // Переключение на главный поток для логирования ошибок
-                withContext(Dispatchers.Main){
+                withContext(Dispatchers.Main) {
                     Log.e("apptask", e.message.toString())
                 }
             }
@@ -70,15 +78,12 @@ class TaskViewModel @Inject constructor(
                     )
                 )
                 if (result is AppResult.Success){
-                    // получение актуальных данных из базы данных
                     fetchData()
-                    // Переключение на главный поток для логирования успешного создания задачи
                     withContext(Dispatchers.Main) {
                         Log.w("apptask", "task created!")
                     }
                 }
             } catch (e: Exception){
-                // Переключение на главный поток для логирования ошибок
                 withContext(Dispatchers.Main){
                     Log.e("apptask", e.message.toString())
                 }
@@ -124,8 +129,8 @@ class TaskViewModel @Inject constructor(
                     fetchData()
                 }
             } catch(e: Exception) {
-            withContext(Dispatchers.Main){
-                Log.e("appTask", e.message.toString())
+                withContext(Dispatchers.Main){
+                    Log.e("appTask", e.message.toString())
                 }
             }
         }

@@ -3,6 +3,7 @@ package com.example.tasktrack.utils
 import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.app.Dialog
+import android.app.TimePickerDialog
 import android.content.Context
 import android.widget.Button
 import android.widget.ImageView
@@ -41,13 +42,16 @@ object DialogManager {
         ivCancel.setOnClickListener {
             dialog.dismiss()
         }
+
         btnChangeDate.setOnClickListener {
             val datePickerDialog = DatePickerDialog(
                 context,
                 { _, year: Int, monthOfYear: Int, dayOfMonth: Int ->
                     calendar.set(year, monthOfYear, dayOfMonth)
-                    dueDate = calendar.time
-                    isDateSelected = true
+                    showTimePicker(context, calendar) { selectedDate ->
+                        dueDate = selectedDate
+                        isDateSelected = true
+                    }
                 },
                 calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.MONTH),
@@ -55,9 +59,9 @@ object DialogManager {
             )
 
             datePickerDialog.datePicker.minDate = currentDate.timeInMillis
-
             datePickerDialog.show()
         }
+
         btnAddTask.setOnClickListener {
             val title = etTaskTitle.text.toString().trim()
             val description = etTaskDescription.text.toString().trim()
@@ -77,6 +81,21 @@ object DialogManager {
         dialog.show()
     }
 
+    private fun showTimePicker(context: Context, calendar: Calendar, onTimeSelected: (Date) -> Unit) {
+        val timePickerDialog = TimePickerDialog(
+            context,
+            { _, hourOfDay, minute ->
+                calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
+                calendar.set(Calendar.MINUTE, minute)
+                onTimeSelected(calendar.time)
+            },
+            calendar.get(Calendar.HOUR_OF_DAY),
+            calendar.get(Calendar.MINUTE),
+            true
+        )
+        timePickerDialog.show()
+    }
+
     fun editTaskDialog(context: Context, task: TaskModel, editTaskListener: EditTaskListener) {
         val dialog = Dialog(context, R.style.DialogCustomTheme)
 
@@ -92,8 +111,7 @@ object DialogManager {
         val btnEditDueDate: Button = dialog.findViewById(R.id.btnEditTaskDueDate)
         val ivEditCancel: ImageView = dialog.findViewById(R.id.ivEditCancel)
         val etEditTaskTitle: TextInputEditText = dialog.findViewById(R.id.editEditTaskTitle)
-        val etEditTaskDescription: TextInputEditText =
-            dialog.findViewById(R.id.editEditTaskDescription)
+        val etEditTaskDescription: TextInputEditText = dialog.findViewById(R.id.editEditTaskDescription)
 
         var dueDate: Date? = null
         val currentDate = Calendar.getInstance()
@@ -113,8 +131,10 @@ object DialogManager {
                 context,
                 { _, year: Int, monthOfYear: Int, dayOfMonth: Int ->
                     calendar.set(year, monthOfYear, dayOfMonth)
-                    dueDate = calendar.time
-                    isDateSelected = true
+                    showTimePicker(context, calendar) { selectedDate ->
+                        dueDate = selectedDate
+                        isDateSelected = true
+                    }
                 },
                 calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.MONTH),
@@ -122,7 +142,6 @@ object DialogManager {
             )
 
             datePickerDialog.datePicker.minDate = currentDate.timeInMillis
-
             datePickerDialog.show()
         }
 

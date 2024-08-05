@@ -22,8 +22,30 @@
         <item name="boxBackgroundColor">@color/primaryColor</item>
         <item name="elevation">0dp</item>
     </style>
+    
+    <style name="SearchViewStyle" parent="Widget.AppCompat.Light.SearchView">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:queryHint">Введите название задачи</item>
+        <item name="android:background">@color/white</item>
+        <item name="android:iconifiedByDefault">false</item>
+        <item name="android:queryBackground">@android:color/transparent</item>
+        <item name="android:submitBackground">@android:color/transparent</item>
+        <item name="android:inputType">text</item>
 
-    <!-- Отключение tint для кнопок -->
+    </style>
+
+    <style name="CustomTabLayout" parent="Widget.MaterialComponents.TabLayout">
+        <item name="tabMaxWidth">0dp</item>
+        <item name="tabGravity">fill</item>
+        <item name="tabMode">fixed</item>
+        <item name="tabIndicatorColor">@color/secondaryColor</item>
+        <item name="tabTextColor">@color/black</item>
+        <item name="tabBackground">@color/backgroundColor</item>
+        <item name="tabSelectedTextColor">@color/white</item>
+        <item name="tabIndicatorHeight">2dp</item>
+        <item name="fontFamily">rounded</item>
+    </style>
+    
     <style name="ButtonStyle" parent="Widget.Material3.Button">
         <item name="android:background">@drawable/custom_button_background</item>
     </style>

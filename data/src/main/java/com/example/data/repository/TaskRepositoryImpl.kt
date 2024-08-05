@@ -1,6 +1,5 @@
 package com.example.data.repository
 
-import android.app.Application
 import android.content.Context
 import com.example.data.database.AppDatabase
 import com.example.data.mappers.TaskRepositoryMapper
@@ -18,14 +17,6 @@ class TaskRepositoryImpl(
     override suspend  fun getAllTasks(): AppResult<List<TaskModel>> {
         return try {
             AppResult.Success(db.taskDAO().getAll().map { mapper.toTaskModel(it) })
-        } catch (e: Exception){
-            AppResult.Error(e.message ?: "Unknown error")
-        }
-    }
-
-    override suspend  fun getTaskById(id: Int): AppResult<TaskModel> {
-        return try {
-            AppResult.Success(mapper.toTaskModel(db.taskDAO().getById(id)))
         } catch (e: Exception){
             AppResult.Error(e.message ?: "Unknown error")
         }
