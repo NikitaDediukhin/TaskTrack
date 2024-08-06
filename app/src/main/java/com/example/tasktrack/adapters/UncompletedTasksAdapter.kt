@@ -1,5 +1,6 @@
 package com.example.tasktrack.adapters
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,10 +11,12 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.domain.models.TaskModel
 import com.example.tasktrack.R
+import com.example.tasktrack.activity.MainActivity
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 class UncompletedTasksAdapter(
+    private val context: Context,
     private val onDeleteTask: (TaskModel) -> Unit,
     private val onMarkTask: (TaskModel, Boolean) -> Unit,
     private val onEditTask: (TaskModel) -> Unit
@@ -30,6 +33,7 @@ class UncompletedTasksAdapter(
         private val btnTaskEdit: ImageView = itemView.findViewById(R.id.ivEditTask)
 
         fun onBind(
+            context: Context,
             task: TaskModel,
             onDeleteTask: (TaskModel) -> Unit,
             onMarkTask: (TaskModel, Boolean) -> Unit,
@@ -43,6 +47,8 @@ class UncompletedTasksAdapter(
 
             btnDelete.setOnClickListener {
                 onDeleteTask(task)
+                // Restore deleted task with SnackBar
+                (context as? MainActivity)?.restoreDeletedTask(task)
             }
 
             btnTaskStatus.isChecked = task.competitionStatus
@@ -64,6 +70,6 @@ class UncompletedTasksAdapter(
 
     override fun onBindViewHolder(holder: UncompletedTaskViewHolder, position: Int) {
         val currentTask = getItem(position)
-        holder.onBind(currentTask, onDeleteTask, onMarkTask, onEditTask)
+        holder.onBind(context, currentTask, onDeleteTask, onMarkTask, onEditTask)
     }
 }

@@ -46,6 +46,7 @@ class UncompletedTasksFragment: Fragment(), SearchableFragment {
         // RecyclerView & Adapter
         val layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         taskAdapter = UncompletedTasksAdapter(
+            context = requireContext(),
             onDeleteTask = { task -> deleteTask(task) },
             onMarkTask = { task, b -> markTask(task, b) },
             onEditTask = { task -> showEditTaskDialog(task) }

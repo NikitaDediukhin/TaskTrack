@@ -6,12 +6,14 @@ import android.util.Log
 import android.view.View
 import android.widget.SearchView
 import androidx.activity.viewModels
+import com.example.domain.models.TaskModel
 import com.example.tasktrack.R
 import com.example.tasktrack.adapters.ViewPagerAdapter
 import com.example.tasktrack.databinding.ActivityMainBinding
 import com.example.tasktrack.fragment.TaskViewModel
 import com.example.tasktrack.fragment.UncompletedTasksFragment
 import com.example.tasktrack.utils.DialogManager
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
@@ -87,10 +89,14 @@ class MainActivity : AppCompatActivity() {
             override fun onClick(title: String, description: String, dueDate: Date) {
                 try {
                     vm.createTask(
-                        title = title,
-                        description = description,
-                        changeDate = Date(),
-                        dueDate = dueDate
+                        TaskModel(
+                            id = 0,
+                            title = title,
+                            description = description,
+                            creationDate = Date(),
+                            dueDate = dueDate,
+                            competitionStatus = false
+                        )
                     )
                 } catch (e: Exception){
                     Log.e("task", e.message.toString())
@@ -102,5 +108,14 @@ class MainActivity : AppCompatActivity() {
     private fun searchQuery(query: String) {
         val currentFragment = vpAdapter.getCurrentFragment(binding.viewPager.currentItem)
         currentFragment?.searchTask(query)
+    }
+
+    //Restore deleted task with SnackBar
+    fun restoreDeletedTask(task: TaskModel) {
+        val snackBar = Snackbar.make(binding.root, "Удалено '${task.title}'", Snackbar.LENGTH_SHORT)
+        snackBar.setAction("Отменить") {
+            vm.createTask(task)
+        }
+        snackBar.show()
     }
 }

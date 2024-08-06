@@ -64,19 +64,10 @@ class TaskViewModel @Inject constructor(
     }
 
     // создание новой задачи и добавления её в БД
-    fun createTask(title: String, description: String, changeDate: Date, dueDate: Date) {
+    fun createTask(task: TaskModel) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val result = createTaskUseCase.execute(
-                    TaskModel(
-                        id = 0,
-                        title = title,
-                        description = description,
-                        creationDate = changeDate,
-                        dueDate = dueDate,
-                        competitionStatus = false
-                    )
-                )
+                val result = createTaskUseCase.execute(task)
                 if (result is AppResult.Success){
                     fetchData()
                     withContext(Dispatchers.Main) {
