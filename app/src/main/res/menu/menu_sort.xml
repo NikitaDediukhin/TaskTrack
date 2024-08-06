@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/sort_by_name_asc"
+        android:title="Название: по возрастанию"/>
+    <item
+        android:id="@+id/sort_by_name_desc"
+        android:title="Название: по убыванию"/>
+    <item
+        android:id="@+id/sort_by_date_asc"
+        android:title="Дата: по возрастанию"/>
+    <item
+        android:id="@+id/sort_by_date_desc"
+        android:title="Дата: по убыванию"/>
+</menu>

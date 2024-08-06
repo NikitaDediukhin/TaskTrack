@@ -30,14 +30,14 @@
                     android:layout_height="40dp"
                     android:paddingHorizontal="10dp"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/sortButton"
+                    app:layout_constraintEnd_toStartOf="@+id/btnSort"
                     app:layout_constraintHorizontal_chainStyle="spread"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
                 </SearchView>
 
                 <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/sortButton"
+                    android:id="@+id/btnSort"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:background="@drawable/ic_sort"

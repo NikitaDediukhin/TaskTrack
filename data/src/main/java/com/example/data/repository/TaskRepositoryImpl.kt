@@ -14,7 +14,7 @@ class TaskRepositoryImpl(
 
     private val db: AppDatabase = AppDatabase.getInstance(context)
 
-    override suspend  fun getAllTasks(): AppResult<List<TaskModel>> {
+    override suspend fun getAllTasks(): AppResult<List<TaskModel>> {
         return try {
             AppResult.Success(db.taskDAO().getAll().map { mapper.toTaskModel(it) })
         } catch (e: Exception){
@@ -22,7 +22,7 @@ class TaskRepositoryImpl(
         }
     }
 
-    override suspend  fun createTask(task: TaskModel): AppResult<Long> {
+    override suspend fun createTask(task: TaskModel): AppResult<Long> {
         return try {
             AppResult.Success(db.taskDAO().insert(mapper.toTaskEntity(task)))
         } catch (e: Exception){
@@ -30,7 +30,7 @@ class TaskRepositoryImpl(
         }
     }
 
-    override suspend  fun updateTask(task: TaskModel): AppResult<Int> {
+    override suspend fun updateTask(task: TaskModel): AppResult<Int> {
         return try {
             AppResult.Success(db.taskDAO().update(mapper.toTaskEntity(task)))
         } catch (e: Exception){
@@ -46,7 +46,7 @@ class TaskRepositoryImpl(
         }
     }
 
-    override suspend  fun deleteTask(task: TaskModel): AppResult<Int> {
+    override suspend fun deleteTask(task: TaskModel): AppResult<Int> {
         return try {
             AppResult.Success(db.taskDAO().delete(mapper.toTaskEntity(task).id))
         } catch (e: Exception){

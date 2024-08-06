@@ -16,7 +16,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.util.Date
 import javax.inject.Inject
 import kotlin.Exception
 
@@ -29,11 +28,11 @@ class TaskViewModel @Inject constructor(
     private val editTaskUseCase: EditTaskUseCase
 ): ViewModel() {
 
-    // LiveData для наблюдения за списком невыполненных задач
+    // LiveData for monitoring the list of uncompleted tasks
     private val uncompletedTasksMutable = MutableLiveData<List<TaskModel>>()
     val uncompletedTasks: LiveData<List<TaskModel>> = uncompletedTasksMutable
 
-    // LiveData для наблюдения за списком выполненных задач
+    // LiveData for monitoring the list of completed tasks
     private val completedTasksMutable = MutableLiveData<List<TaskModel>>()
     val completedTasks: LiveData<List<TaskModel>> = completedTasksMutable
 
@@ -41,14 +40,14 @@ class TaskViewModel @Inject constructor(
         fetchData()
     }
 
-    // получение всех задач из БД
-    fun fetchData() {
+    // Getting all tasks from the database
+    private fun fetchData() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val result = getAllTasksUseCase.execute()
                 if(result is AppResult.Success){
                     result.data.let {
-                        // Переключение на главный поток для обновления LiveData
+                        // Switching to the MainThread to update LiveData
                         withContext(Dispatchers.Main) {
                             uncompletedTasksMutable.value = it.filter { !it.competitionStatus }
                             completedTasksMutable.value = it.filter { it.competitionStatus }
@@ -63,7 +62,7 @@ class TaskViewModel @Inject constructor(
         }
     }
 
-    // создание новой задачи и добавления её в БД
+    // Сreating a new task and adding it to the database
     fun createTask(task: TaskModel) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
@@ -125,6 +124,25 @@ class TaskViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    // task sorting
+    private fun sortTasks(tasks: List<TaskModel>, sortBy: String): List<TaskModel> {
+        return when (sortBy) {
+            "title_asc" -> tasks.sortedBy { it.title }
+            "title_desc" -> tasks.sortedByDescending { it.title }
+            "date_asc" -> tasks.sortedBy { it.creationDate }
+            "date_desc" -> tasks.sortedByDescending { it.creationDate }
+            else -> tasks
+        }
+    }
+
+    fun sortUncompletedTasks(sortBy: String) {
+        uncompletedTasksMutable.value = sortTasks(uncompletedTasksMutable.value ?: emptyList(), sortBy)
+    }
+
+    fun sortCompletedTasks(sortBy: String) {
+        completedTasksMutable.value = sortTasks(completedTasksMutable.value ?: emptyList(), sortBy)
     }
 
 }

@@ -3,15 +3,18 @@ package com.example.tasktrack.activity
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
+import android.widget.PopupMenu
 import android.widget.SearchView
 import androidx.activity.viewModels
 import com.example.domain.models.TaskModel
 import com.example.tasktrack.R
 import com.example.tasktrack.adapters.ViewPagerAdapter
 import com.example.tasktrack.databinding.ActivityMainBinding
+import com.example.tasktrack.fragment.FilterableFragment
 import com.example.tasktrack.fragment.TaskViewModel
-import com.example.tasktrack.fragment.UncompletedTasksFragment
 import com.example.tasktrack.utils.DialogManager
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
@@ -69,18 +72,20 @@ class MainActivity : AppCompatActivity() {
         // clear searchView after switch Fragment
         binding.tabLayout.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
+                // clear search
                 binding.searchView.setQuery("", false)
                 binding.searchView.clearFocus()
+                // clear sort
+                vpAdapter.getCurrentFragment(binding.viewPager.currentItem)?.sortTasks("date_asc")
             }
-
-            override fun onTabUnselected(tab: TabLayout.Tab?) {
-
-            }
-
-            override fun onTabReselected(tab: TabLayout.Tab?) {
-
-            }
+            override fun onTabUnselected(tab: TabLayout.Tab?) { }
+            override fun onTabReselected(tab: TabLayout.Tab?) { }
         })
+
+        // Sorting button
+        binding.btnSort.setOnClickListener{ view ->
+            showSortMenu(view, vpAdapter.getCurrentFragment(binding.viewPager.currentItem))
+        }
     }
 
     private fun showAddTaskDialog() {
@@ -117,5 +122,25 @@ class MainActivity : AppCompatActivity() {
             vm.createTask(task)
         }
         snackBar.show()
+    }
+
+    private fun showSortMenu(view: View, fragment: FilterableFragment?) {
+        val popup = PopupMenu(this, view)
+        val inflater: MenuInflater = popup.menuInflater
+        inflater.inflate(R.menu.menu_sort, popup.menu)
+        popup.setOnMenuItemClickListener { menuItem: MenuItem ->
+            handleMenuItemClick(menuItem, fragment)
+            true
+        }
+        popup.show()
+    }
+
+    private fun handleMenuItemClick(menuItem: MenuItem, fragment: FilterableFragment?) {
+        when (menuItem.itemId) {
+            R.id.sort_by_name_asc -> fragment?.sortTasks("title_asc")
+            R.id.sort_by_name_desc -> fragment?.sortTasks("title_desc")
+            R.id.sort_by_date_asc -> fragment?.sortTasks("date_asc")
+            R.id.sort_by_date_desc -> fragment?.sortTasks("date_desc")
+        }
     }
 }

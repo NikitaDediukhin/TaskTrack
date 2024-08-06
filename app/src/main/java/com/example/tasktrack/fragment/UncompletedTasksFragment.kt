@@ -14,7 +14,7 @@ import com.example.tasktrack.databinding.UncompletedTasksFragmentBinding
 import com.example.tasktrack.utils.DialogManager
 import java.util.Date
 
-class UncompletedTasksFragment: Fragment(), SearchableFragment {
+class UncompletedTasksFragment: Fragment(), FilterableFragment {
 
     private lateinit var binding: UncompletedTasksFragmentBinding
     private lateinit var taskAdapter: UncompletedTasksAdapter
@@ -91,6 +91,11 @@ class UncompletedTasksFragment: Fragment(), SearchableFragment {
             }
             taskAdapter.submitList(searchTasks)
         }
+    }
+
+    // Task sorting
+    override fun sortTasks(sortBy: String) {
+        viewModel.sortUncompletedTasks(sortBy)
     }
 
 }

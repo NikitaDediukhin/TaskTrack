@@ -15,7 +15,7 @@ import com.example.tasktrack.databinding.CompletedTasksFragmentBinding
 import com.example.tasktrack.utils.DialogManager
 import java.util.Date
 
-class CompletedTasksFragment: Fragment(), SearchableFragment {
+class CompletedTasksFragment: Fragment(), FilterableFragment {
 
     private lateinit var binding: CompletedTasksFragmentBinding
     private lateinit var rvTasks: RecyclerView
@@ -95,5 +95,10 @@ class CompletedTasksFragment: Fragment(), SearchableFragment {
             }
             taskAdapter.submitList(searchTasks)
         }
+    }
+
+    // Task sorting
+    override fun sortTasks(sortBy: String) {
+        viewModel.sortCompletedTasks(sortBy)
     }
 }
