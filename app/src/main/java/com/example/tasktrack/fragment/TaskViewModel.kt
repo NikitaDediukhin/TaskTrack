@@ -36,8 +36,17 @@ class TaskViewModel @Inject constructor(
     private val completedTasksMutable = MutableLiveData<List<TaskModel>>()
     val completedTasks: LiveData<List<TaskModel>> = completedTasksMutable
 
+    // Grid View
+    private val isGridViewMutable = MutableLiveData<Boolean>()
+    val isGridView: LiveData<Boolean> get() = isGridViewMutable
+
     init {
+        isGridViewMutable.value = false
         fetchData()
+    }
+
+    fun toggleView() {
+        isGridViewMutable.value = isGridViewMutable.value?.not()
     }
 
     // Getting all tasks from the database

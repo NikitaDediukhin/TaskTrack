@@ -18,13 +18,13 @@ class IncompletedTasksAdapter(
     private val context: Context,
     private val onDeleteTask: (TaskModel) -> Unit,
     private val onMarkTask: (TaskModel, Boolean) -> Unit,
-    private val onEditTask: (TaskModel) -> Unit
-) : ListAdapter<TaskModel, IncompletedTasksAdapter.UncompletedTaskViewHolder>(TaskDiffCallback()) {
+    private val onEditTask: (TaskModel) -> Unit,
+    private var isGridLayout: Boolean
+) : ListAdapter<TaskModel, IncompletedTasksAdapter.IncompletedTaskViewHolder>(TaskDiffCallback()) {
 
-    class UncompletedTaskViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class IncompletedTaskViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val tvTitle: TextView = itemView.findViewById(R.id.tvTaskTitle)
         private val tvDescription: TextView = itemView.findViewById(R.id.tvTaskDescription)
-        //private val tvCreationDate: TextView = item.findViewById(R.id.tvTaskCreationDate)
         private val tvDueDate: TextView = itemView.findViewById(R.id.tvTaskDueDate)
         private val tvStatus: TextView = itemView.findViewById(R.id.tvTaskStatus)
         private val btnDelete: ImageView = itemView.findViewById(R.id.ivDeleteTask)
@@ -40,7 +40,6 @@ class IncompletedTasksAdapter(
         ) {
             tvTitle.text = task.title
             tvDescription.text = task.description
-            //tvCreationDate.text = SimpleDateFormat("dd-MMM-yyyy HH:mm:ss a", Locale.getDefault()).format(task.creationDate)
             tvDueDate.text = SimpleDateFormat("HH:mm, dd:MMM:yy", Locale.getDefault()).format(task.dueDate)
             tvStatus.text = if (task.competitionStatus) "выполнено" else "в процессе"
 
@@ -71,13 +70,23 @@ class IncompletedTasksAdapter(
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UncompletedTaskViewHolder {
-        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_task_layout, parent, false)
-        return UncompletedTaskViewHolder(itemView)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): IncompletedTaskViewHolder {
+        val layout = if (isGridLayout) {
+            R.layout.item_task_grid_layout
+        } else {
+            R.layout.item_task_layout
+        }
+        val itemView = LayoutInflater.from(parent.context).inflate(layout, parent, false)
+        return IncompletedTaskViewHolder(itemView)
     }
 
-    override fun onBindViewHolder(holder: UncompletedTaskViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: IncompletedTaskViewHolder, position: Int) {
         val currentTask = getItem(position)
         holder.onBind(context, currentTask, onDeleteTask, onMarkTask, onEditTask)
+    }
+
+    fun setGridLayout(isGrid: Boolean) {
+        isGridLayout = isGrid
+        notifyDataSetChanged()
     }
 }

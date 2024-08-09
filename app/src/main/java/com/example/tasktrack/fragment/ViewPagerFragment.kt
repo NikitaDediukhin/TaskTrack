@@ -1,6 +1,6 @@
 package com.example.tasktrack.fragment
 
-interface FilterableFragment {
+interface ViewPagerFragment {
     fun searchTask(query: String)
     fun sortTasks(sortBy: String)
     fun clearFilter()

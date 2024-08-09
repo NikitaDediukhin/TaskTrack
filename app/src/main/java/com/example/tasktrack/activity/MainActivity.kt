@@ -9,12 +9,13 @@ import android.view.View
 import android.widget.PopupMenu
 import android.widget.SearchView
 import androidx.activity.viewModels
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.viewpager2.widget.ViewPager2
 import com.example.domain.models.TaskModel
 import com.example.tasktrack.R
 import com.example.tasktrack.adapters.ViewPagerAdapter
 import com.example.tasktrack.databinding.ActivityMainBinding
-import com.example.tasktrack.fragment.FilterableFragment
+import com.example.tasktrack.fragment.ViewPagerFragment
 import com.example.tasktrack.fragment.TaskViewModel
 import com.example.tasktrack.utils.DialogManager
 import com.google.android.material.snackbar.Snackbar
@@ -110,7 +111,17 @@ class MainActivity : AppCompatActivity() {
         binding.btnSort.setOnClickListener{ view ->
             showSortMenu(view, vpAdapter.getCurrentFragment(binding.viewPager.currentItem))
         }
+
+        // Grid button & isGridView Live Data
+        binding.btnGrid.setOnClickListener {
+            vm.toggleView()
+        }
+        vm.isGridView.observe(this) {isGrid ->
+            val iconRes = if (isGrid) R.drawable.ic_list_view else R.drawable.ic_grid_view
+            binding.btnGrid.setBackgroundDrawable(AppCompatResources.getDrawable(this, iconRes))
+        }
     }
+
 
     private fun showAddTaskDialog() {
         DialogManager.addTaskDialog(this, object : DialogManager.CreateTaskListener {
@@ -148,7 +159,7 @@ class MainActivity : AppCompatActivity() {
         snackBar.show()
     }
 
-    private fun showSortMenu(view: View, fragment: FilterableFragment?) {
+    private fun showSortMenu(view: View, fragment: ViewPagerFragment?) {
         val popup = PopupMenu(this, view)
         val inflater: MenuInflater = popup.menuInflater
         inflater.inflate(R.menu.menu_sort, popup.menu)
@@ -159,7 +170,7 @@ class MainActivity : AppCompatActivity() {
         popup.show()
     }
 
-    private fun handleMenuItemClick(menuItem: MenuItem, fragment: FilterableFragment?) {
+    private fun handleMenuItemClick(menuItem: MenuItem, fragment: ViewPagerFragment?) {
         when (menuItem.itemId) {
             R.id.sort_by_name_asc -> fragment?.sortTasks(SORT_TITLE_ASC)
             R.id.sort_by_name_desc -> fragment?.sortTasks(SORT_TITLE_DESC)

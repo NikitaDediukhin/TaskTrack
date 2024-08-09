@@ -6,19 +6,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.domain.models.TaskModel
 import com.example.tasktrack.activity.MainActivity
 import com.example.tasktrack.adapters.CompletedTasksAdapter
+import com.example.tasktrack.adapters.IncompletedTasksAdapter
 import com.example.tasktrack.databinding.CompletedTasksFragmentBinding
 import com.example.tasktrack.utils.DialogManager
 import java.util.Date
 
-class CompletedTasksFragment: Fragment(), FilterableFragment {
+class CompletedTasksFragment: Fragment(), ViewPagerFragment {
 
     private lateinit var binding: CompletedTasksFragmentBinding
-    private lateinit var rvTasks: RecyclerView
     private lateinit var taskAdapter: CompletedTasksAdapter
     private lateinit var viewModel: TaskViewModel
 
@@ -37,7 +38,7 @@ class CompletedTasksFragment: Fragment(), FilterableFragment {
         // Initialize ViewModel
         viewModel = (activity as MainActivity).vm
 
-        init()
+        initRecyclerView()
 
         viewModel.completedTasks.observe(viewLifecycleOwner) {
             taskAdapter.submitList(it).apply {
@@ -46,22 +47,34 @@ class CompletedTasksFragment: Fragment(), FilterableFragment {
                 }
             }
         }
+        viewModel.isGridView.observe(viewLifecycleOwner) {
+            taskAdapter.setGridLayout(it)
+            setRecyclerViewLayoutManager(it)
+        }
     }
 
-    private fun init() {
+    // Toogle Grid
+    // recyclerView settings
+    private fun initRecyclerView() {
 
         // RecyclerView & Adapter
-        rvTasks = binding.rvCompletedTasks
         taskAdapter = CompletedTasksAdapter(
             context = requireContext(),
             onDeleteTask = { task -> deleteTask(task) },
             onMarkTask = { task, b -> markTask(task, b) },
-            onEditTask = { task -> showEditTaskDialog(task) }
+            onEditTask = { task -> showEditTaskDialog(task) },
+            isGridLayout = viewModel.isGridView.value ?: false
         )
 
-        val layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        rvTasks.layoutManager = layoutManager
-        rvTasks.adapter = taskAdapter
+        binding.rvCompletedTasks.adapter = taskAdapter
+        setRecyclerViewLayoutManager(viewModel.isGridView.value ?: false)
+    }
+    private fun setRecyclerViewLayoutManager(isGridLayout: Boolean) {
+        if (isGridLayout) {
+            binding.rvCompletedTasks.layoutManager = GridLayoutManager(context, 2)
+        } else {
+            binding.rvCompletedTasks.layoutManager = LinearLayoutManager(context)
+        }
     }
 
     private fun showEditTaskDialog(task: TaskModel) {
