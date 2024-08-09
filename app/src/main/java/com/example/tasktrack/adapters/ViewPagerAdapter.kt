@@ -5,11 +5,11 @@ import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.example.tasktrack.fragment.CompletedTasksFragment
 import com.example.tasktrack.fragment.FilterableFragment
-import com.example.tasktrack.fragment.UncompletedTasksFragment
+import com.example.tasktrack.fragment.IncompletedTasksFragment
 
 class ViewPagerAdapter(fragmentActivity: FragmentActivity): FragmentStateAdapter(fragmentActivity) {
     private val fragments = listOf<Fragment>(
-        UncompletedTasksFragment(),
+        IncompletedTasksFragment(),
         CompletedTasksFragment()
     )
 

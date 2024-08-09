@@ -29,8 +29,8 @@ class TaskViewModel @Inject constructor(
 ): ViewModel() {
 
     // LiveData for monitoring the list of uncompleted tasks
-    private val uncompletedTasksMutable = MutableLiveData<List<TaskModel>>()
-    val uncompletedTasks: LiveData<List<TaskModel>> = uncompletedTasksMutable
+    private val incompletedTasksMutable = MutableLiveData<List<TaskModel>>()
+    val incompletedTasks: LiveData<List<TaskModel>> = incompletedTasksMutable
 
     // LiveData for monitoring the list of completed tasks
     private val completedTasksMutable = MutableLiveData<List<TaskModel>>()
@@ -49,7 +49,7 @@ class TaskViewModel @Inject constructor(
                     result.data.let {
                         // Switching to the MainThread to update LiveData
                         withContext(Dispatchers.Main) {
-                            uncompletedTasksMutable.value = it.filter { !it.competitionStatus }
+                            incompletedTasksMutable.value = it.filter { !it.competitionStatus }
                             completedTasksMutable.value = it.filter { it.competitionStatus }
                         }
                     }
@@ -137,8 +137,11 @@ class TaskViewModel @Inject constructor(
         }
     }
 
-    fun sortUncompletedTasks(sortBy: String) {
-        uncompletedTasksMutable.value = sortTasks(uncompletedTasksMutable.value ?: emptyList(), sortBy)
+    fun sortIncompletedTasks(sortBy: String) {
+        val currentTasks = incompletedTasksMutable.value?.toList() ?: emptyList()
+        val sortedTasks = sortTasks(currentTasks, sortBy)
+        incompletedTasksMutable.value = emptyList()
+        incompletedTasksMutable.value = sortedTasks
     }
 
     fun sortCompletedTasks(sortBy: String) {

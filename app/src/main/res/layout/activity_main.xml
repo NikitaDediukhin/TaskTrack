@@ -30,23 +30,37 @@
                     android:layout_height="40dp"
                     android:paddingHorizontal="10dp"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/btnSort"
+                    app:layout_constraintEnd_toStartOf="@+id/btnGrid"
                     app:layout_constraintHorizontal_chainStyle="spread"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
                 </SearchView>
 
                 <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btnGrid"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/ic_grid"
+                    android:layout_marginEnd="5dp"
+                    android:layout_marginStart="5dp"
+                    app:layout_constraintEnd_toStartOf="@id/btnSort"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/searchView" />
+
+                <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btnSort"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:background="@drawable/ic_sort"
-                    android:layout_marginEnd="30dp"
+                    android:layout_marginEnd="10dp"
                     android:layout_marginStart="5dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/searchView" />
+                    app:layout_constraintStart_toEndOf="@id/btnGrid" />
+
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.appcompat.widget.Toolbar>

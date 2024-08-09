@@ -40,7 +40,11 @@ class CompletedTasksFragment: Fragment(), FilterableFragment {
         init()
 
         viewModel.completedTasks.observe(viewLifecycleOwner) {
-            taskAdapter.submitList(it)
+            taskAdapter.submitList(it).apply {
+                binding.rvCompletedTasks.post{
+                    binding.rvCompletedTasks.smoothScrollToPosition(0)
+                }
+            }
         }
     }
 
@@ -99,6 +103,19 @@ class CompletedTasksFragment: Fragment(), FilterableFragment {
 
     // Task sorting
     override fun sortTasks(sortBy: String) {
-        viewModel.sortCompletedTasks(sortBy)
+        viewModel.sortCompletedTasks(sortBy).apply {
+            binding.rvCompletedTasks.post{
+                binding.rvCompletedTasks.smoothScrollToPosition(0)
+            }
+        }
+    }
+
+    override fun clearFilter() {
+        viewModel.completedTasks.observe(viewLifecycleOwner) {
+            val searchTasks = it.filter { taskModel ->
+                taskModel.title.contains("", true) || taskModel.description.contains("", true)
+            }
+            taskAdapter.submitList(searchTasks)
+        }
     }
 }

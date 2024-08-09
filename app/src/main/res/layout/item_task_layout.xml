@@ -104,10 +104,11 @@
                 android:src="@drawable/ic_delete"
                 app:tint="@color/secondaryColor" />
 
-            <androidx.appcompat.widget.SwitchCompat
+            <ImageView
                 android:id="@+id/btnTaskStatus"
-                android:layout_width="45dp"
-                android:layout_height="25dp"
+                android:src="@drawable/ic_task_incomplete"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
                 android:layout_margin="4dp" />
 
         </LinearLayout>

@@ -9,6 +9,7 @@ import android.view.View
 import android.widget.PopupMenu
 import android.widget.SearchView
 import androidx.activity.viewModels
+import androidx.viewpager2.widget.ViewPager2
 import com.example.domain.models.TaskModel
 import com.example.tasktrack.R
 import com.example.tasktrack.adapters.ViewPagerAdapter
@@ -28,6 +29,14 @@ class MainActivity : AppCompatActivity() {
     val vm: TaskViewModel by viewModels()
     private lateinit var binding: ActivityMainBinding
     private val vpAdapter: ViewPagerAdapter = ViewPagerAdapter(this)
+    private var isFirstLaunch = true
+
+    companion object {
+        const val SORT_TITLE_ASC = "title_asc"
+        const val SORT_TITLE_DESC = "title_desc"
+        const val SORT_DATE_ASC = "date_asc"
+        const val SORT_DATE_DESC = "date_desc"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,9 +86,24 @@ class MainActivity : AppCompatActivity() {
                 binding.searchView.clearFocus()
                 // clear sort
                 vpAdapter.getCurrentFragment(binding.viewPager.currentItem)?.sortTasks("date_asc")
+
             }
             override fun onTabUnselected(tab: TabLayout.Tab?) { }
             override fun onTabReselected(tab: TabLayout.Tab?) { }
+        })
+
+        binding.viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                if (!isFirstLaunch) {
+                    // clear sort
+                    val previousPosition = if(position == 0) 1 else 0
+                    val previousFragment = vpAdapter.getCurrentFragment(previousPosition)
+                    previousFragment?.sortTasks("date_asc")
+                    // clear search
+                    previousFragment?.clearFilter()
+                }
+                isFirstLaunch = false
+            }
         })
 
         // Sorting button
@@ -137,10 +161,10 @@ class MainActivity : AppCompatActivity() {
 
     private fun handleMenuItemClick(menuItem: MenuItem, fragment: FilterableFragment?) {
         when (menuItem.itemId) {
-            R.id.sort_by_name_asc -> fragment?.sortTasks("title_asc")
-            R.id.sort_by_name_desc -> fragment?.sortTasks("title_desc")
-            R.id.sort_by_date_asc -> fragment?.sortTasks("date_asc")
-            R.id.sort_by_date_desc -> fragment?.sortTasks("date_desc")
+            R.id.sort_by_name_asc -> fragment?.sortTasks(SORT_TITLE_ASC)
+            R.id.sort_by_name_desc -> fragment?.sortTasks(SORT_TITLE_DESC)
+            R.id.sort_by_date_asc -> fragment?.sortTasks(SORT_DATE_ASC)
+            R.id.sort_by_date_desc -> fragment?.sortTasks(SORT_DATE_DESC)
         }
     }
 }

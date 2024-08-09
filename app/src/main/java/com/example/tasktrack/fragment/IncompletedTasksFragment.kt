@@ -9,15 +9,15 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.domain.models.TaskModel
 import com.example.tasktrack.activity.MainActivity
-import com.example.tasktrack.adapters.UncompletedTasksAdapter
-import com.example.tasktrack.databinding.UncompletedTasksFragmentBinding
+import com.example.tasktrack.adapters.IncompletedTasksAdapter
+import com.example.tasktrack.databinding.IncompletedTasksFragmentBinding
 import com.example.tasktrack.utils.DialogManager
 import java.util.Date
 
-class UncompletedTasksFragment: Fragment(), FilterableFragment {
+class IncompletedTasksFragment: Fragment(), FilterableFragment {
 
-    private lateinit var binding: UncompletedTasksFragmentBinding
-    private lateinit var taskAdapter: UncompletedTasksAdapter
+    private lateinit var binding: IncompletedTasksFragmentBinding
+    private lateinit var taskAdapter: IncompletedTasksAdapter
     private lateinit var viewModel: TaskViewModel
 
     override fun onCreateView(
@@ -25,7 +25,7 @@ class UncompletedTasksFragment: Fragment(), FilterableFragment {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = UncompletedTasksFragmentBinding.inflate(inflater, container, false)
+        binding = IncompletedTasksFragmentBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -37,23 +37,28 @@ class UncompletedTasksFragment: Fragment(), FilterableFragment {
 
         init()
 
-        viewModel.uncompletedTasks.observe(viewLifecycleOwner) {
-            taskAdapter.submitList(it)
+        viewModel.incompletedTasks.observe(viewLifecycleOwner) {
+            binding.rvIncompletedTasks.scrollToPosition(0)
+            taskAdapter.submitList(it) {
+                binding.rvIncompletedTasks.post {
+                    binding.rvIncompletedTasks.scrollToPosition(0)
+                }
+            }
         }
     }
 
     private fun init() {
         // RecyclerView & Adapter
         val layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        taskAdapter = UncompletedTasksAdapter(
+        taskAdapter = IncompletedTasksAdapter(
             context = requireContext(),
             onDeleteTask = { task -> deleteTask(task) },
             onMarkTask = { task, b -> markTask(task, b) },
             onEditTask = { task -> showEditTaskDialog(task) }
         )
 
-        binding.rvTasks.layoutManager = layoutManager
-        binding.rvTasks.adapter = taskAdapter
+        binding.rvIncompletedTasks.layoutManager = layoutManager
+        binding.rvIncompletedTasks.adapter = taskAdapter
     }
 
     private fun showEditTaskDialog(task: TaskModel) {
@@ -85,7 +90,7 @@ class UncompletedTasksFragment: Fragment(), FilterableFragment {
     }
 
     override fun searchTask(query: String) {
-        viewModel.uncompletedTasks.observe(viewLifecycleOwner) {
+        viewModel.incompletedTasks.observe(viewLifecycleOwner) {
             val searchTasks = it.filter { taskModel ->
                 taskModel.title.contains(query, true) || taskModel.description.contains(query, true)
             }
@@ -95,7 +100,21 @@ class UncompletedTasksFragment: Fragment(), FilterableFragment {
 
     // Task sorting
     override fun sortTasks(sortBy: String) {
-        viewModel.sortUncompletedTasks(sortBy)
+        viewModel.sortIncompletedTasks(sortBy).apply {
+            binding.rvIncompletedTasks.post{
+                binding.rvIncompletedTasks.scrollToPosition(0)
+            }
+        }
+
+    }
+
+    override fun clearFilter() {
+        viewModel.incompletedTasks.observe(viewLifecycleOwner) {
+            val searchTasks = it.filter { taskModel ->
+                taskModel.title.contains("", true) || taskModel.description.contains("", true)
+            }
+            taskAdapter.submitList(searchTasks)
+        }
     }
 
 }
